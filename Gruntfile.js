@@ -2,11 +2,15 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-coffee');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-stencil')
+  grunt.loadNpmTasks('grunt-stencil');
+  grunt.loadNpmTasks('grunt-contrib-requirejs');
 
   grunt.initConfig({
     coffee: {
       compile: {
+          options: {
+              bare: true
+          },
         files: {
           'lib/grammar.js': 'language/grammar.coffee',
           'lib/chuck/helpers.js': 'src/chuck/helpers.coffee',
@@ -51,6 +55,7 @@ module.exports = function (grunt) {
       lib: {
         files: [
           {expand: true, cwd: 'src/lib/', src: ['q.js'], dest: 'lib/'},
+          {expand: true, cwd: 'src/chuck/', src: ['noamd.js'], dest: 'lib/'},
           {expand: true, cwd: 'src/chuck/', src: ['ugen.js'], dest: 'lib/chuck/'},
           {expand: true, cwd: 'src/chuck/libs/', src: ['stk.js'], dest: 'lib/chuck/libs/'}
         ]
@@ -106,7 +111,27 @@ module.exports = function (grunt) {
           }
         ]
       }
-
+    },
+    requirejs: {
+        js: {
+            options: {
+                findNestedDependencies: true,
+                baseUrl: 'lib',
+                wrap: false,
+                preserveLicenseComments: false,
+                optimize: 'none',
+                include: ['q', 'chuck', 'lodash','chuck/parser', 'noamd'],
+                out: 'dist/chuck-noamd.js',
+                onModuleBundleComplete: function (data) {
+                    var fs = require('fs'),
+                        amdclean = require('amdclean'),
+                        outputFile = data.path;
+                    fs.writeFileSync(outputFile, amdclean.clean({
+                        'filePath': outputFile
+                    }));
+                }
+            }
+        }
     }
   });
 
@@ -119,4 +144,5 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('default', ['coffee', 'parser', 'copy', 'shell', 'stencil']);
+  grunt.registerTask('noamd', ['coffee', 'parser', 'copy','requirejs']);
 };

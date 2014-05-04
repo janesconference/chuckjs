@@ -27,7 +27,9 @@
     "jison": "~0.4.13",
     "almond": "~0.2.7",
     "grunt-contrib-copy": "~0.5.0",
-    "grunt-stencil": "~1.0.2"
+    "grunt-stencil": "~1.0.2",
+    "amdclean": "^1.5.0",
+    "grunt-contrib-requirejs": "^0.4.4"
   },
   "scripts": {
     "test": "./node_modules/karma/bin/karma start --single-run --browsers PhantomJS"
