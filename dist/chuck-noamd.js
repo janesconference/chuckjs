@@ -5976,15 +5976,15 @@ var chuck = function (parserService, scanner, vmModule, logging, audioContextSer
         module = {};
         module.Chuck = function () {
             function _Class(audioContext, audioDestination) {
-                this.audioContext = audioContext;
-                this.audioDestination = audioDestination;
+                this.audioContext = audioContext != null ? audioContext : null;
+                this.audioDestination = audioDestination != null ? audioDestination : null;
                 this.isExecuting = __bind(this.isExecuting, this);
                 this.stop = __bind(this.stop, this);
                 this.execute = __bind(this.execute, this);
             }
             _Class.prototype.execute = function (sourceCode, args) {
                 var ast, byteCode;
-                audioContextService.prepareForExecution(this.audioContext = null, this.audioDestination = null);
+                audioContextService.prepareForExecution(this.audioContext, this.audioDestination);
                 ast = parserService.parse(sourceCode);
                 byteCode = scanner.scan(ast);
                 this._vm = new vmModule.Vm(args);
