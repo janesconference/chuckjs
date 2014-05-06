@@ -2142,6 +2142,12 @@ var chuck_audioContextService = function (logging) {
             };
             AudioContextService.prototype.prepareForExecution = function (ac, dn) {
                 var AudioContext;
+                if (ac == null) {
+                    ac = null;
+                }
+                if (dn == null) {
+                    dn = null;
+                }
                 if (ac != null) {
                     this._audioContext = ac;
                     if (dn != null) {
@@ -2157,9 +2163,7 @@ var chuck_audioContextService = function (logging) {
                 logging.debug('Initializing audio context');
                 AudioContext = window.AudioContext || window.webkitAudioContext;
                 this._audioContext = new AudioContext();
-                if (this._audioDestination == null) {
-                    this._audioDestination = this._audioContext.destination;
-                }
+                this._audioDestination = this._audioContext.destination;
             };
             AudioContextService.prototype.createScriptProcessor = function () {
                 this._scriptProcessor = this._audioContext.createScriptProcessor(16384, 0, 2);
@@ -5980,7 +5984,7 @@ var chuck = function (parserService, scanner, vmModule, logging, audioContextSer
             }
             _Class.prototype.execute = function (sourceCode, args) {
                 var ast, byteCode;
-                audioContextService.prepareForExecution(this.audioContext, this.audioDestination);
+                audioContextService.prepareForExecution(this.audioContext = null, this.audioDestination = null);
                 ast = parserService.parse(sourceCode);
                 byteCode = scanner.scan(ast);
                 this._vm = new vmModule.Vm(args);
